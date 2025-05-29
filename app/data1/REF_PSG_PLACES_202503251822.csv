@@ -1,4 +1,4 @@
-PLACE_ID;CODE;NAME;TYPE_ID;IS_PARKING;IS_TEST;ST_CODE;ST_NAME;ST_NAME_SHORT;LN_CODE;LN_NAME;LN_NAME_SHORT
+PLACE_ID;CODE;NAME;TYPE_ID;IS_PARKING;IS_TEST;ST_CODE;ST_NAME;ST_NAME_SHORT;LN_CODE;LN_NAME;Название линии
 38826;1;ЦОД НБС;1;0;0;1951;ЦОД НБС;ЦОД НБС;1681;ПАК ЦОТТ;ПАК ЦОТТ
 40234;1;Виртуальная Станция ЖД;15;0;0;;;;;;
 38904;1;Учебная;3;0;0;26;МОС 1;МОС 1;4;Наземный городской пассажирский транспорт;НГПТ

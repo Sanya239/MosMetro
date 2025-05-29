@@ -129,7 +129,7 @@ def load_top_stops_overground(top=20, start_dt="2025-03-10", end_dt="2025-03-16"
     # Топ остановок
     top_stops = (
         filtered.join(
-            place_lookup.select(["PLACE_ID", "NAME", "LN_NAME_SHORT"]),
+            place_lookup.select(["PLACE_ID", "NAME", "Название линии"]),
             left_on="PLACE_ID",
             right_on="PLACE_ID",
             how="left"
@@ -159,12 +159,12 @@ def load_top_stops_underground(top=20, start_dt="2025-03-10", end_dt="2025-03-16
         return "Wrong data format"
     top_stops = (
         filtered.join(
-            place_lookup.select(["PLACE_ID", "NAME", "LN_NAME_SHORT"]),
+            place_lookup.select(["PLACE_ID", "NAME", "Название линии"]),
             left_on="PLACE_ID",
             right_on="PLACE_ID",
             how="left"
         )
-        .group_by("PLACE_ID", "NAME", "LN_NAME_SHORT")
+        .group_by("PLACE_ID", "NAME", "Название линии")
         .agg(pl.len().alias("count"))
         .sort("count", descending=[True])
         .drop_nulls()
@@ -260,7 +260,7 @@ def date_picker(min_date, max_date):
                 start_date=min_date,
                 end_date=max_date,
                 className="center transparent-datepicker",
-                style={'background-color': 'transparent'},
+                style={'zIndex': 9999,},
             ), ]),
         html.Span(
             "Дата от/до",
@@ -412,19 +412,19 @@ def application(df):
             data = load_top_routes_overground(top_number, start_date, end_date, start_time_str, end_time_str,
                                               continuous,
                                               True)
-            fig = plot(data, "NAME", "count", color="NAME_right")
+            fig = plot(data, "NAME", "count", color="Вид транспорта")
         elif data_source == 't1':
             data = load_top_routes_overground(top_number, start_date, end_date, start_time_str, end_time_str,
                                               continuous,
                                               False)
-            fig = plot(data, "NAME", "rides_per_vehicle", color="NAME_right")
+            fig = plot(data, "NAME", "rides_per_vehicle", color="Вид транспорта")
         elif data_source == 't2':
             data = load_top_stops_overground(top_number, start_date, end_date, start_time_str, end_time_str, continuous)
             fig = plot(data, "NAME", "count", )
         elif data_source == 't3':
             data = load_top_stops_underground(top_number, start_date, end_date, start_time_str, end_time_str,
                                               continuous)
-            fig = plot(data, "NAME", "count", color="LN_NAME_SHORT")
+            fig = plot(data, "NAME", "count", color="Название линии")
 
         return fig
 
