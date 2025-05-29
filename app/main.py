@@ -1,14 +1,19 @@
-from datetime import datetime
+import logging
+print("Starting application")
 
+print("Importing modules")
+from datetime import datetime
 import duckdb
 import pandas as pd
 import plotly.express as px
 import polars as pl
 from dash import Dash, dcc, html, Input, Output, State
+from waitress import serve
+print("Imports complete")
 
+logging.getLogger('waitress').setLevel(logging.ERROR)
 data_folder = 'data1/'
 csv_path = data_folder + "big_data.csv"  # путь к жирному файлу
-
 parquet_path = csv_path.replace('.csv', '.parquet')
 
 
@@ -35,9 +40,8 @@ def read_parquet_with_duckdb(data_path: str, no_metro=False, no_overground=False
         WHERE row_num % 10 = 0
     """
 
-    result = duckdb.query(query).pl().with_columns(
-        pl.col("TRAN_DATE").str.strptime(pl.Datetime, format="%Y-%m-%d %H:%M:%S%.f")
-    ).with_columns([
+    result = (duckdb.query(query).pl().
+    with_columns([
         pl.col("TRAN_DATE").dt.date().alias("TRAN_ONLY_DATE"),
         pl.col("TRAN_DATE").dt.time().alias("TRAN_ONLY_TIME")
     ]).with_columns(
@@ -48,11 +52,14 @@ def read_parquet_with_duckdb(data_path: str, no_metro=False, no_overground=False
         .otherwise(pl.col("BUS_RT_NO"))
         .alias("BUS_RT_NO")).with_columns(
         pl.col("TRAN_DATE").dt.strftime("%A").alias("DAY_NAME")
-    )
+    ))
     return result
 
-
+print("Reading data")
 big_data = read_parquet_with_duckdb(parquet_path)
+overground = read_parquet_with_duckdb(parquet_path, no_metro=True)
+underground = read_parquet_with_duckdb(parquet_path, no_overground=True)
+print("Data loaded")
 
 
 def show(fig):
@@ -109,8 +116,7 @@ def filter_by_time(data, start_dt, end_dt, start_tm, end_tm, continuous):
     return filtered
 
 
-overground = read_parquet_with_duckdb(parquet_path, no_metro=True)
-underground = read_parquet_with_duckdb(parquet_path, no_overground=True)
+
 
 
 def load_top_stops_overground(top=20, start_dt="2025-03-10", end_dt="2025-03-16", start_tm="00:00",
@@ -423,7 +429,14 @@ def application(df):
 
         return fig
 
-    app.run(port=8240, host="0.0.0.0")
+    return app
 
 
-application(big_data)
+app = application(big_data)
+
+if __name__ == '__main__':
+    print('Starting server on port 8239...')
+    print("Checkout --> http://localhost:8239/")
+    serve(app.server, host='0.0.0.0', port=8239)
+else:
+    print(f"__name__ is: {__name__} (has to be __main__)")

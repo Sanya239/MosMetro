@@ -6,3 +6,4 @@ dash~=3.0.4
 polars~=1.30.0
 plotly~=6.1.2
 pyarrow
+waitress

@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Открываем порт (если Dash-приложение)
-EXPOSE 8240
+EXPOSE 8239
 
 # Указываем команду запуска
-CMD ["python", "main.py"]
+CMD ["python","-u", "main.py"]
