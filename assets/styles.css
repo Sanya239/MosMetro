@@ -1,0 +1,15 @@
+.hidden {
+    display: none !important;
+}
+
+.transparent-datepicker input {
+    background-color: transparent !important;
+    /*color: white; !* если нужно на тёмном фоне *!*/
+    border: 1px solid #1e1f22;
+}
+
+.transparent-datepicker div {
+    background-color: transparent !important;
+    /*color: white; !* если нужно на тёмном фоне *!*/
+    border: 0px solid #1e1f22;
+}
