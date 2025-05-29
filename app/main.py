@@ -37,7 +37,6 @@ def read_parquet_with_duckdb(data_path: str, no_metro=False, no_overground=False
             FROM '{data_path}'
             {where_clause}
         ) AS sub
-        WHERE row_num % 10 = 0
     """
 
     result = (duckdb.query(query).pl().
