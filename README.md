@@ -6,7 +6,7 @@
 - Из папки app/ выполнить команды:
 ```
     sudo docker build -t my-dash-app .  
-    sudo docker run -p 8239:8239 my-dash-app 
+    sudo docker run -it -p 8239:8239 my-dash-app 
 ```
 - Перейти на http://localhost:8239/
 - Победа
