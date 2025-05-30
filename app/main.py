@@ -211,7 +211,8 @@ def load_top_routes_overground(top=20, start_dt="2025-03-10", end_dt="2025-03-16
         return top_routes.filter(pl.col("overload") <= top)
 
 
-def plot(data: pl.DataFrame, x: str, y: str, title="", color=None, do_show=False):
+def plot(data: pl.DataFrame, x: str, y: str, title="", xaxis ="", yaxis="",
+         color=None, do_show=False):
     df_pandas = data.to_pandas()
     if color == None:
         fig = px.bar(
@@ -230,8 +231,8 @@ def plot(data: pl.DataFrame, x: str, y: str, title="", color=None, do_show=False
         )
 
     fig.update_layout(
-        xaxis_title="Остановка",
-        yaxis_title="Количество поездок",
+        xaxis_title=xaxis,
+        yaxis_title=yaxis,
         xaxis_categoryorder="total descending",
         xaxis_tickangle=-45,
         margin=dict(t=50, b=100),
@@ -348,7 +349,7 @@ def submit_button():
 
 def layout(df):
     return html.Div([
-        html.Div(className="l2"),
+        html.Div(className="s2"),
         html.Div([
             html.Br(),
             html.H3(
@@ -373,8 +374,8 @@ def layout(df):
 
             ]),
             dcc.Graph(id='graph', style={'width': '100%'}), ]
-            , className="l8"),
-        html.Div(className="l2"),
+            , className="s8"),
+        html.Div(className="s2"),
 
     ], className="grid")
 
@@ -412,19 +413,19 @@ def application(df):
             data = load_top_routes_overground(top_number, start_date, end_date, start_time_str, end_time_str,
                                               continuous,
                                               True)
-            fig = plot(data, "NAME", "count", color="Вид транспорта")
+            fig = plot(data, "NAME", "count", color="Вид транспорта", xaxis="Название маршрута", yaxis="Количество поездок")
         elif data_source == 't1':
             data = load_top_routes_overground(top_number, start_date, end_date, start_time_str, end_time_str,
                                               continuous,
                                               False)
-            fig = plot(data, "NAME", "rides_per_vehicle", color="Вид транспорта")
+            fig = plot(data, "NAME", "rides_per_vehicle", color="Вид транспорта",xaxis="Название маршрута", yaxis="Количество поездок на еденицу транспорта")
         elif data_source == 't2':
             data = load_top_stops_overground(top_number, start_date, end_date, start_time_str, end_time_str, continuous)
-            fig = plot(data, "NAME", "count", )
+            fig = plot(data, "NAME", "count", xaxis="Название остановки", yaxis="Количество посадок")
         elif data_source == 't3':
             data = load_top_stops_underground(top_number, start_date, end_date, start_time_str, end_time_str,
                                               continuous)
-            fig = plot(data, "NAME", "count", color="Название линии")
+            fig = plot(data, "NAME", "count", color="Название линии", xaxis="Название станции", yaxis="Количество посадок")
 
         return fig
 
